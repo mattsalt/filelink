@@ -1,16 +1,23 @@
-var express = require('express')
-var compress = require('compression')
-var bodyParser = require('body-parser')
-var path = require('path')
-var storage = require('node-persist')
-var FileCleaner = require('cron-file-cleaner').FileCleaner;
-var crypto = require("crypto");
+const crypto = require('crypto')
+const path = require('path')
+const fs = require('fs')
+
+const express = require('express')
+const compress = require('compression')
+const bodyParser = require('body-parser')
+const storage = require('node-persist')
+const FileCleaner = require('cron-file-cleaner').FileCleaner
 const fileUpload = require('express-fileupload')
 
-var fs = require('fs')
-var app = express()
+const app = express()
 
-storage.initSync({ttl: 7 * 24 * 60 * 60 * 1000})
+const storageTime = 7 * 25 * 60 * 60 * 1000
+
+storage.initSync({ttl: storageTime})
+
+let fileWatcher = new FileCleaner(path.join(__dirname, 'uploads'), storageTime, '* */30 * * * *', {
+  start: true
+})
 
 app.set('port', (process.env.PORT || 3000))
 
@@ -30,54 +37,56 @@ app.get('/', (req, res, next) => {
 app.post('/upload', uploadFile)
 app.get('/:token', getFile)
 
-const maxIntHash = 1000000000
-
-function getNextHash() {
-  return crypto.randomBytes(8).toString('base64');
-}
-
-const re = /(?:\.([^.]+))?$/
-
-function writeFile (file, callBack) {
-  var hashExists = true
-  while(hashExists){
-     var hash = getNextHash()
-     var extension = re.exec(file.name)[1]
-     var existing = storage.valuesWithKeyMatch(hash) 
-     if(existing.length === 0){
-        hashExists = false
-     }
-  }
-  fs.writeFile(path.join(__dirname, 'uploads', hash + '.'+extension), file.data, 'base64', (err) => {
-    if (err) throw err
-    storage.setItemSync(hash, hash + '.' + extension)
-    console.log('Saved file: ' + file.name + ' with hash: ' + hash)
-    callBack(null, hash)
-  })
-}
 
 function uploadFile (req, res, next) {
   let file = req.files.upload
   writeFile(file, (err, hash) => {
     if (err) {
       console.log('error')
-      res.status(501).send('Bad Request')
+      res.status(500).send('Server error - failed to store file')
     } else {
       res.status(200).json({sucess: true, link: 'http://localhost:3000/' + hash})
     }
   })
 }
 
-function getFile (req, res, next) {
-  let hash = req.params.token
-  let fileName = storage.getItemSync(hash)
-  console.log('Retrieving ' + fileName + ' from hash-' + hash) 
-  res.sendFile(path.join(__dirname, 'uploads', fileName))
+const fileExtensionRegex = /(?:\.([^.]+))?$/
+
+function writeFile (file, callBack) {
+  let hash = getNextHash()
+  while (storage.valuesWithKeyMatch(hash).length > 0) {
+    hash = getNextHash()
+  }
+
+  const extension = fileExtensionRegex.exec(file.name)[1]
+
+  fs.writeFile(path.join(__dirname, 'uploads', hash + '.' + extension), file.data, 'base64', (err) => {
+    if (err) throw err
+    storage.setItem(hash, hash + '.' + extension)
+        .then(() => {
+          console.log('Saved file: ' + file.name + ' with hash: ' + hash)
+          callBack(null, hash)
+        })
+  })
 }
 
-var fileWatcher = new FileCleaner(path.join(__dirname, 'uploads'), 12 * 60 * 60 * 1000,  '* */30 * * * *', {
-  start: true
-});
+function getNextHash () {
+  return crypto.randomBytes(8).toString('base64')
+}
+
+function getFile (req, res, next) {
+  let hash = req.params.token
+  storage.getItem(hash)
+    .then((fileName) => {
+      if (fileName === undefined) {
+        console.log(`No such file ${hash}`)
+        res.status(501).send('No such file')
+        return
+      }
+      console.log('Retrieving ' + fileName + ' from hash-' + hash)
+      res.sendFile(path.join(__dirname, 'uploads', fileName))
+    })
+}
 
 app.listen(app.get('port'))
 module.exports = app

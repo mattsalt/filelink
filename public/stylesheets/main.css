@@ -1,14 +1,5 @@
-
-/*
-	AUTHOR: Osvaldas Valutis, www.osvaldas.info
-*/
-
-
-
 @import url( '_normalize.css' );
 @import url( '_defaults.css' );
-
-
 
 body,
 .ad,
@@ -17,14 +8,12 @@ body,
 	font-family: Lucida Grande, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
 }
 
-a
-{
+a{
 	color: currentColor;
 	text-decoration: none;
 }
 
-.clearfix::after
-{
+.clearfix::after{
 	content: '';
 	display: table;
 	clear: both;
@@ -36,8 +25,7 @@ a
 	AD
 */
 
-.ad
-{
+.ad{
 	width: 9.375rem; /* 150 */
 	color: #444;
 	color: rgba( 0, 0, 0, .75 );
@@ -49,15 +37,14 @@ a
 	left: 0.625rem; /* 10 */
 	padding: 0.5rem 0.625rem; /* 8 10 */
 }
-.ad--dark
-{
+
+.ad--dark{
 	color: #ddd;
 	color: rgba( 255, 255, 255, .75 );
 	background-color: #111;
 	background-color: rgba( 0, 0, 0, .5 );
 }
-	.ad__close
-	{
+	.ad__close{
 		width: 0.625rem; /* 10 */
 		height: 0.625rem; /* 10 */
 		background-color: #777;
