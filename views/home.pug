@@ -353,7 +353,7 @@ html.no-js(lang='en')
                   var data = JSON.parse( ajax.responseText );
                   console.log(data)
                   var urlLabel = document.getElementById('shortenedUrl')
-                  urlLabel.textContent = data.link
+                  urlLabel.textContent = 'Your file is now at ' + data.link + '. It will be available for 7 days'
                   //- console.log(data.success == true )
                   //- form.classList.add( data.success == true ? 'is-success' : 'is-error' );
                   //- if( !data.success ) errorMsg.textContent = data.error;
@@ -367,8 +367,7 @@ html.no-js(lang='en')
               };
               ajax.send( ajaxData );
             }
-            else // fallback Ajax solution upload for older browsers
-            {
+            else {
               var iframeName  = 'uploadiframe' + new Date().getTime(),
                 iframe    = document.createElement( 'iframe' );
                 $iframe   = $( '<iframe name="' + iframeName + '" style="display: none;"></iframe>' );
@@ -399,7 +398,6 @@ html.no-js(lang='en')
               input.click();
             });
           });
-          // Firefox focus bug fix for file input
           input.addEventListener( 'focus', function(){ input.classList.add( 'has-focus' ); });
           input.addEventListener( 'blur', function(){ input.classList.remove( 'has-focus' ); });
         });
