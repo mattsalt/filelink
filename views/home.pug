@@ -1,14 +1,11 @@
 doctype html
-html.no-js(lang='en')
+html.js(lang='en')
   head
     meta(charset='utf-8')
     title File Link
     meta(name='viewport', content='width=device-width,initial-scale=1')
     link(rel='stylesheet', href='/stylesheets/main.css')
     link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Roboto:300,300italic,400')
-    // remove this if you use Modernizr
-    script.
-      (function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\\s)no-js(\s|$)/,"$1js$2")})(document,window,0);
     style.
         body{
           font-family: Roboto, sans-serif;
@@ -37,15 +34,13 @@ html.no-js(lang='en')
           transition: outline-offset .15s ease-in-out, background-color .15s linear;
         }
         /*Change color on dragover*/
-        .box.is-dragover
-        {
+        .box.is-dragover{
           outline-offset: -20px;
           outline-color: #c8dadf;
           background-color: #fff;
         }
         /*Display file icon inline*/
-        .box .box__icon
-        {
+        .box .box__icon{
           width: 100%;
           height: 80px;
           fill: #92b0b3;
@@ -53,22 +48,19 @@ html.no-js(lang='en')
           margin-bottom: 40px;
         }
 
-        .box.is-uploading .box__input,
-        {
+        .box.is-uploading .box__input,{
           visibility: hidden;
         }
 
         .box__uploading,
         .box__success,
-        .box__error
-        {
+        .box__error{
           display: none;
         }
 
         .box.is-uploading .box__uploading,
         .box.is-success .box__success,
-        .box.is-error .box__error
-        {
+        .box.is-error .box__error{
           display: block;
           position: absolute;
           top: 50%;
@@ -78,32 +70,28 @@ html.no-js(lang='en')
           -webkit-transform: translateY( -50% );
           transform: translateY( -50% );
         }
-        .box__uploading
-        {
+
+        .box__uploading{
           font-style: italic;
         }
 
         /*Animate Success */
-        .box__success
-        {
+        .box__success{
           -webkit-animation: appear-from-inside .25s ease-in-out;
           animation: appear-from-inside .25s ease-in-out;
         }
-        @-webkit-keyframes appear-from-inside
-        {
+        @-webkit-keyframes appear-from-inside{
           from  { -webkit-transform: translateY( -50% ) scale( 0 ); }
           75%   { -webkit-transform: translateY( -50% ) scale( 1.1 ); }
           to    { -webkit-transform: translateY( -50% ) scale( 1 ); }
         }
-        @keyframes appear-from-inside
-        {
+        @keyframes appear-from-inside{
           from  { transform: translateY( -50% ) scale( 0 ); }
           75%   { transform: translateY( -50% ) scale( 1.1 ); }
           to    { transform: translateY( -50% ) scale( 1 ); }
         }
 
-        .js .box__file
-        {
+        .js .box__file{
           width: 0.1px;
           height: 0.1px;
           opacity: 0;
@@ -111,8 +99,8 @@ html.no-js(lang='en')
           position: absolute;
           z-index: -1;
         }
-        .js .box__file + label
-        {
+
+        .js .box__file + label{
           max-width: 80%;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -120,31 +108,29 @@ html.no-js(lang='en')
           display: inline-block;
           overflow: hidden;
         }
+
         .js .box__file + label:hover strong,
         .box__file:focus + label strong,
-        .box__file.has-focus + label strong
-        {
+        .box__file.has-focus + label strong{
           color: #39bfd3;
         }
+
         .js .box__file:focus + label,
-        .js .box__file.has-focus + label
-        {
+        .js .box__file.has-focus + label{
           outline: 1px dotted #000;
           outline: -webkit-focus-ring-color auto 5px;
         }
 
-
-
-
   body
     .container(role='main')
-      form#upload-form.box(method='post', action='http://localhost:8080/upload', enctype='multipart/form-data', novalidate='')
+      form#upload-form.box(method='post', action='/upload', enctype='multipart/form-data', novalidate='')
         .box__input
           svg.box__icon(xmlns='http://www.w3.org/2000/svg', width='50', height='43', viewbox='0 0 50 43')
             path(d='M48.4 26.5c-.9 0-1.7.7-1.7 1.7v11.6h-43.3v-11.6c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v13.2c0 .9.7 1.7 1.7 1.7h46.7c.9 0 1.7-.7 1.7-1.7v-13.2c0-1-.7-1.7-1.7-1.7zm-24.5 6.1c.3.3.8.5 1.2.5.4 0 .9-.2 1.2-.5l10-11.6c.7-.7.7-1.7 0-2.4s-1.7-.7-2.4 0l-7.1 8.3v-25.3c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v25.3l-7.1-8.3c-.7-.7-1.7-.7-2.4 0s-.7 1.7 0 2.4l10 11.6z')
           input#file.box__file(type='file', name='upload')
-          label#firstLabel(for='file')
-            strong Drag a file here to upload 
+          label(for='file')
+            strong Choose a file
+            span.box__dragndrop  or drag it here.
           br
           label#shortenedUrl
         .box__uploading Uploading…
@@ -251,4 +237,3 @@ html.no-js(lang='en')
             xhr.send(fileData);
           })
       }( document, window, 0 ));
-
