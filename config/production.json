@@ -1,0 +1,6 @@
+{
+  "server": {
+      "fileDirectory": "/mnt/seagate1/uploads",
+      "port": 80
+  }
+}

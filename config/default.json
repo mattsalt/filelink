@@ -1,0 +1,6 @@
+{
+  "server": {
+      "fileDirectory": "/opt/msapps/fileLink/uploads",
+      "port": 8080
+  }
+}

@@ -7,3 +7,6 @@ Future Improvements
 2. Use non local hash store to allow clustering
 3. Support larger files
 4. Encrypt files if possible -> https://gist.github.com/PaulMougel/7511372
+
+start on boot with cron
+@reboot /usr/bin/sudo -u pi -H forever start /opt/msapps/fileLink/index.js

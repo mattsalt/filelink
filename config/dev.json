@@ -1,0 +1,6 @@
+{
+  "server": {
+      "fileDirectory": "/Volumes/Transcend/dev/node/filelink/uploads",
+      "port": 8080
+  }
+}
