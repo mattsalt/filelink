@@ -10,8 +10,8 @@ const storage = require('node-persist')
 const FileCleaner = require('cron-file-cleaner').FileCleaner
 const fileUpload = require('express-fileupload')
 
-process.env["NODE_CONFIG_DIR"] = __dirname + "/config/";
-const config = require('config');
+process.env['NODE_CONFIG_DIR'] = __dirname + '/config/'
+const config = require('config')
 const serverConfig = config.get('server')
 const app = express()
 
@@ -19,8 +19,8 @@ const storageTime = 7 * 25 * 60 * 60 * 1000
 console.log(process.env.NODE_ENV)
 
 storage.initSync({
-	ttl: storageTime,
-        dir: __dirname + '/node-persist/'
+  ttl: storageTime,
+  dir: __dirname + '/node-persist/'
 })
 
 let fileWatcher = new FileCleaner(path.join(serverConfig.fileDirectory), storageTime, '* */30 * * * *', {
@@ -46,10 +46,10 @@ app.get('/', (req, res, next) => {
 app.post('/upload', uploadFile)
 app.get('/:token', getFile)
 
-
 function uploadFile (req, res, next) {
   console.log('CALLED')
   let file = req.files.upload
+  console.log(file)
   writeFileToDisk(file, (err, hash) => {
     if (err) {
       console.log('error')
@@ -63,7 +63,7 @@ function uploadFile (req, res, next) {
 const fileExtensionRegex = /(?:\.([^.]+))?$/
 
 function writeFileToDisk (file, callBack) {
-  var fileCopy = file
+  const fileCopy = file
   let hash = getNextHash()
 
   while (storage.valuesWithKeyMatch(hash).length > 0) {
@@ -74,7 +74,9 @@ function writeFileToDisk (file, callBack) {
   console.log(fileCopy.name)
   let extension = fileExtensionRegex.exec(fileCopy.name)[1]
 
-  fs.writeFile(path.join(serverConfig.fileDirectory, hash + '.' + extension), fileCopy.data, 'base64', (err) => {
+  let savePath = path.join(serverConfig.fileDirectory, hash + '.' + extension)
+  console.log('Saving to - ' + savePath)
+  fs.writeFile(savePath, fileCopy.data, 'base64', (err) => {
     if (err) throw err
     storage.setItem(hash, hash + '.' + extension)
         .then(() => {
