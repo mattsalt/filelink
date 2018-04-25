@@ -87,7 +87,11 @@ function writeFileToDisk (file, callBack) {
 }
 
 function getNextHash () {
-  return crypto.randomBytes(8).toString('base64')
+  var hash = crypto.randomBytes(9).toString('base64')
+  if(hash.indexOf('/') > -1 ){
+    hash = crypto.randomBytes(9).toString('base64')
+  }
+  return hash
 }
 
 function getFile (req, res, next) {
